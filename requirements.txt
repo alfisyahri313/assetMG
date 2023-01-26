@@ -1,4 +1,4 @@
-google-ads==14.1.0
+google-ads
 flask
 google-api-python-client
 pylint

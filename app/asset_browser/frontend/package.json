@@ -27,6 +27,7 @@
     "@rxweb/reactive-form-validators": "^2.0.0-rc6",
     "@types/gapi": "^0.0.39",
     "@types/gapi.auth2": "^0.0.52",
+    "@types/google.accounts": "^0.0.5",
     "font-awesome": "^4.7.0",
     "ng2-search-filter": "^0.5.1",
     "rxjs": "~6.6.0",

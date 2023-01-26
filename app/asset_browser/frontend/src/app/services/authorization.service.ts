@@ -39,68 +39,42 @@ export class AuthorizationService {
     });
   }
 
-  async initGoogleAuth(): Promise<void> {
-    //  Create a new Promise where the resolve 
-    // function is the callback passed to gapi.load
-    const pload = new Promise((resolve) => {
-      gapi.load('auth2', resolve);
-    });
-
-    // When the first promise resolves, it means we have gapi
-    // loaded and that we can call gapi.init
-    return pload.then(async () => {
-      var config = this._configService.getConfigSettings();
-
-      await gapi.auth2
-        .init({
-          client_id: config.client_id,
-          scope: "https://www.googleapis.com/auth/adwords https://www.googleapis.com/auth/youtube.readonly"
-        })
-        .then(auth => {
-          this.authInstance = auth;
-        });
-    });
-  }
 
   async authenticate(force=false) {
     var error = "";
     var storedToken = await this.retrieveStoredRefreshToken();
+    var config = this._configService.getConfigSettings();
+    var refreshAccessToken;
     if (!force && storedToken) {
       this.refreshToken = storedToken;
       this.loggedInSubject.next(true);
     } else {
-      // Initialize gapi if not done yet
-      if (!this.authInstance) {
-        await this.initGoogleAuth();
-      }
-      // Get the refresh access token
-      var refreshAccessToken = await this.authInstance.grantOfflineAccess({
-        access_type: "offline",
-        prompt: "consent",
-        scope: "https://www.googleapis.com/auth/adwords https://www.googleapis.com/auth/youtube.readonly"
-      })
-      .then((res) => {
-        var refreshAccessToken = res.code;
-        return refreshAccessToken;
-      })
-      .catch((err) => {
-        error = err["error"];
-      });
+
+      // Initialize google identiy service 
+      await google.accounts.oauth2
+        .initCodeClient({
+          client_id: config.client_id,
+          scope: "https://www.googleapis.com/auth/adwords https://www.googleapis.com/auth/youtube.readonly",
+          ux_mode: 'popup',
+          callback: (res) => {
+            refreshAccessToken = res.code
+            this._configService
+                .getConfigRefreshCode(refreshAccessToken)
+                .toPromise()
+                .then((response) => {
+                  this.refreshToken = response.body;
+                  this.loggedInSubject.next(true);
+                  this.storeRefreshToken(this.refreshToken);
+                })
+                .catch((err) => {
+                  error = err["error"];
+                });
+          },
+        })
+        .requestCode();
 
       // Quick exit
       if (error) throw new Error(error);
-
-      await this._configService
-            .getConfigRefreshCode(refreshAccessToken)
-            .toPromise()
-            .then((response) => {
-              this.refreshToken = response.body;
-              this.loggedInSubject.next(true);
-              this.storeRefreshToken(this.refreshToken);
-            })
-            .catch((err) => {
-              error = err["error"];
-            });
     }
 
     if (error) {
