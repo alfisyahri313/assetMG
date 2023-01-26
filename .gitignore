@@ -7,4 +7,4 @@
 config.yaml
 app/cache/*
 app/config/*
-
+package-lock.json
