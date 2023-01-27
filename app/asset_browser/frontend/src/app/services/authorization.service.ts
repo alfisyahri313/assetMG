@@ -54,7 +54,7 @@ export class AuthorizationService {
       await google.accounts.oauth2
         .initCodeClient({
           client_id: config.client_id,
-          scope: "https://www.googleapis.com/auth/adwords https://www.googleapis.com/auth/youtube.readonly",
+          scope: "https://www.googleapis.com/auth/adwords https://www.googleapis.com/auth/youtube.readonly 'https://www.googleapis.com/auth/userinfo.profile' 'https://www.googleapis.com/auth/userinfo.email'",
           ux_mode: 'popup',
           callback: (res) => {
             refreshAccessToken = res.code
