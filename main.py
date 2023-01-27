@@ -181,8 +181,6 @@ def init_flow(from_client_config=False, client_id=None, client_secret=None):
             scopes=[
                 'openid',
                 'https://www.googleapis.com/auth/adwords',
-                'https://www.googleapis.com/auth/userinfo.profile',
-                'https://www.googleapis.com/auth/userinfo.email',
                 'https://www.googleapis.com/auth/youtube.readonly'
             ]
         )
