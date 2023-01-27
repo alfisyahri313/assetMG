@@ -48,7 +48,7 @@ app = Flask(__name__, static_url_path='',
             static_folder='app/asset_browser/frontend/dist/frontend',
             template_folder='app/asset_browser/frontend/dist/frontend')
 
-
+os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 
 UPLOAD_FOLDER = Path(PREFIX + 'uploads')
 UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
@@ -181,6 +181,8 @@ def init_flow(from_client_config=False, client_id=None, client_secret=None):
             scopes=[
                 'openid',
                 'https://www.googleapis.com/auth/adwords',
+                'https://www.googleapis.com/auth/userinfo.profile',
+                'https://www.googleapis.com/auth/userinfo.email',
                 'https://www.googleapis.com/auth/youtube.readonly'
             ]
         )
