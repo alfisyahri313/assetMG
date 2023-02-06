@@ -48,7 +48,8 @@ if (CLOUD_VERSION):
   logging.basicConfig(level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
 else:
   LOGS_PATH = Path('app/logs/server.log')
-  logging.basicConfig(filename=LOGS_PATH ,level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+  logging.basicConfig(level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
+  # logging.basicConfig(filename=LOGS_PATH ,level=logging.INFO, format='%(asctime)s:%(levelname)s:%(message)s')
   PREFIX = 'app/'
 
 CONFIG_PATH = Path(PREFIX + 'config/')
